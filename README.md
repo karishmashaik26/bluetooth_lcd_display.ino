@@ -44,9 +44,46 @@ This project allows you to display characters received via **Bluetooth** onto a 
 
 ---
 
-## 📁 Project Files
+## 📁 CODE
 
-- `code/bluetooth_lcd_display.ino` – Arduino sketch
+#include <Wire.h>
+#include <LiquidCrystal.h> // LCD display library
+#define BACKLIGHT_PIN 13
+
+// LCD configuration
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 7, d7 = 6;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+#include <SoftwareSerial.h>
+#define TxD 3 
+#define RxD 2 
+#define LED_PIN 13
+
+SoftwareSerial bluetoothSerial(TxD, RxD); // Bluetooth serial
+
+char c;
+
+void setup() {
+  bluetoothSerial.begin(9600); // Bluetooth communication
+  lcd.begin(20, 4);            // 20x4 LCD
+  Serial.begin(9600);          // Serial Monitor
+}
+
+void loop() {
+  if (bluetoothSerial.available() > 0) {
+    c = bluetoothSerial.read();
+    lcd.print(c); 
+
+    if (c == '0') {
+      lcd.clear(); // Clear screen on receiving '0'
+    }
+
+    Serial.print(c); // Also print to Serial Monitor
+  } 
+}
+
+
+
 
 ---
 
